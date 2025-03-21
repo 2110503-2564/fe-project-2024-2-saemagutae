@@ -26,7 +26,7 @@ export default async function TopMenu() {
 
 
     return (
-        <header className="fixed top-0 left-0 right-0 bg-white shadow-lg rounded-xl m-3 flex items-center px-6 h-16 z-50">
+        <header className="fixed top-0 left-0 right-0 bg-white shadow-xl rounded-xl m-3 flex items-center px-6 h-16 z-50">
             <div className="flex items-center space-x-6">
                 <Image
                     src="/images/logo.png"
