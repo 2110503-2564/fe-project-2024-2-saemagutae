@@ -2,59 +2,73 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import getUserProfile from "@/libraries/userAPI";
+import Image from "next/image";
+import SignOutButton from "@/components/SignOutButton";
+import EditableProfileDetail from "@/components/EditableProfileDetail";
+import { Delete } from "lucide-react";
+import DeleteAccountButton from "@/components/DeleteAccountButton";
 
 export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
 
     if (!session) {
-        redirect('/auth/signin');
+        redirect("/auth/signin");
     }
 
     const profile = await getUserProfile(session.user.token);
-    console.log(profile);
 
     return (
-        <main className="min-h-screen pt-24 px-4">
-            <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-8">
-                <h1 className="text-3xl font-bold text-gray-800 mb-6">User Profile</h1>
-                
+        <main className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+            <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8">
+                <div className="flex flex-col items-center mb-6">
+                    <Image
+                        src={profile.data.image || "/images/avatar.png"}
+                        alt="User Avatar"
+                        width={90}
+                        height={90}
+                        className="rounded-full shadow-lg"
+                    />
+                    <h1 className="mt-4 text-2xl font-semibold text-gray-800">
+                        {profile.data.name || "N/A"}
+                    </h1>
+                </div>
+
                 <div className="space-y-4">
-                    <div>
-                        <label className="text-sm font-medium text-gray-500">Name</label>
-                        <p className="mt-1 text-lg text-gray-900">
-                            {profile.data.name || 'N/A'}
-                        </p>
-                    </div>
-                    
-                    <div>
-                        <label className="text-sm font-medium text-gray-500">Email</label>
-                        <p className="mt-1 text-lg text-gray-900">
-                            {profile.data.email}
-                        </p>
-                    </div>
-                    
-                    <div>
-                        <label className="text-sm font-medium text-gray-500">Phone</label>
-                        <p className="mt-1 text-lg text-gray-900">
-                            {profile.data.telephone || 'N/A'}
-                        </p>
-                    </div>
-                    
-                    <div>
-                        <label className="text-sm font-medium text-gray-500">Role</label>
-                        <p className="mt-1 text-lg text-gray-900">
-                            {profile.data.role || 'N/A'}
-                        </p>
+                    <EditableProfileDetail
+                        label="Name"
+                        value={profile.data.name}
+                        field="name"
+                        userId={profile.data.id}
+                        token={session.user.token}
+                    />
+
+                    <EditableProfileDetail
+                        label="Email"
+                        value={profile.data.email}
+                        field="email"
+                        userId={profile.data.id}
+                        token={session.user.token}
+                    />
+
+                    <EditableProfileDetail
+                        label="Phone"
+                        value={profile.data.telephone}
+                        field="telephone"
+                        userId={profile.data.id}
+                        token={session.user.token}
+                    />
+
+                    <div className="border-b border-gray-200 pb-3">
+                        <p className="text-sm text-gray-500">Role</p>
+                        <p className="text-lg text-gray-900">{profile.data.role || "N/A"}</p>
                     </div>
                 </div>
 
-                {/* <button
-                    onClick={() => signOut({ callbackUrl: '/auth/signin' })}
-                    className="mt-8 w-full sm:w-auto px-6 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-colors"
-                >
-                    Sign Out
-                </button> */}
+                <div className="mt-6 space-y-4">
+                    <SignOutButton />
+                    <DeleteAccountButton userId={profile.data.id} />
+                </div>
             </div>
         </main>
-    )
+    );
 }
