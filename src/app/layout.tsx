@@ -3,17 +3,18 @@ import "./global.css";
 import TopMenu from "@/components/TopMenu";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
+import GlobalLoading from "./loading";
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
-
     const session = await getServerSession(authOptions);
 
     return (
         <html lang="en">
             <body>
                 <NextAuthProvider session={session}>
-                <TopMenu />
-                {children}
+                    {/* <GlobalLoading /> */}
+                    <TopMenu />
+                    {children}
                 </NextAuthProvider>
             </body>
         </html>

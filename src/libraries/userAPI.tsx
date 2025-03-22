@@ -16,7 +16,6 @@ export async function registerUser(name: string, email: string, password: string
     });
 
     const responseBody = await response.json();
-    console.log(responseBody);
 
     if (!response.ok) {
         throw new Error(responseBody.message || "Failed to register user");
@@ -41,7 +40,6 @@ export async function loginUser(email: string, password: string) {
         throw new Error("Failed to get user profile");
     }
 
-    // console.log(response.json());
     return await response.json();
 }
 
@@ -68,6 +66,40 @@ export default async function getUserProfile(token: string) {
 
     if (!response.ok) {
         throw new Error("Failed to get user profile");
+    }
+
+    return await response.json();
+}
+
+export async function updateUser(token: string, userId: string, userData: { name?: string, email?: string, password?: string, telephone?: string, role?: string }) {
+    const response = await fetch(`${BASE_URL}/auth/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(userData)
+    });
+
+    if (!response.ok) {
+        const responseBody = await response.json();
+        throw new Error(responseBody.message || "Failed to update user");
+    }
+
+    return await response.json();
+}
+
+export async function deleteUser(token: string, userId: string) {
+    const response = await fetch(`${BASE_URL}/auth/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            authorization: `Bearer ${token}`,
+        }
+    });
+
+    if (!response.ok) {
+        const responseBody = await response.json();
+        throw new Error(responseBody.message || "Failed to delete user");
     }
 
     return await response.json();

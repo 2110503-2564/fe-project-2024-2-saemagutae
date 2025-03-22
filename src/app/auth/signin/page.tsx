@@ -1,46 +1,95 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import Loading from "@/components/Loading";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
 
 export default function SignIn() {
+    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [dotCount, setDotCount] = useState(0);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (loading) {
+            interval = setInterval(() => {
+                setDotCount(prev => (prev + 1) % 3);
+            }, 300);
+        }
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [loading]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const result = await signIn("credentials", { email, password, redirect: false });
-        if (result?.error) {
-            setError("Invalid credentials!");
-        } else {
-            window.location.href = "/";
+        setError("");
+        setSuccess("");
+        setLoading(true);
+
+        try {
+            const result = await signIn("credentials", { email, password, redirect: false });
+
+            if (result?.error) {
+                throw new Error(result.error);
+            }
+
+            setSuccess("Login successful! Redirecting...");
+            router.push("/");
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message || "Failed to login. Try again.");
+        } finally {
+            setLoading(false);
+            setDotCount(0);
         }
     };
 
     return (
-        <div className="flex items-center justify-center h-screen bg-gray-100">
-            <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-4">Sign In</h2>
-                {error && <p className="text-red-500">{error}</p>}
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full border p-2 rounded mb-2"
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full border p-2 rounded mb-2"
-                />
-                <button type="submit" className="w-full bg-cyan-600 text-white p-2 rounded">
-                    Sign In
-                </button>
-            </form>
+        <div className="flex min-h-screen items-center justify-center bg-gray-100">
+            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+                <h2 className="text-xl font-semibold text-center">Sign In</h2>
+
+                {error && <p className="text-red-500 text-basae text-center mt-2">{error}</p>}
+
+                {success && <p className="text-green-600 text-base text-center mt-2">{success}</p>}
+
+                <form onSubmit={handleSubmit} className="mt-4">
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-md mb-3"
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-md mb-3"
+                        required
+                    />
+
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:bg-blue-300"
+                        disabled={loading}
+                    >
+                        {loading ? `Signing In${'.'.repeat(dotCount + 1)}` : "Sign In"}
+                    </button>
+                </form>
+
+                <p className="text-sm text-center mt-3">
+                    Don't have an account? <a href="/auth/register" className="text-blue-600">Register</a>
+                </p>
+            </div>
         </div>
     );
 }
