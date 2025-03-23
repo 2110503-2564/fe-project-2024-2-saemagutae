@@ -40,3 +40,31 @@ export async function deleteBooking(token: string, reservationId: string) {
 
   return await response.json();
 }
+
+export async function updateBooking(
+  token: string,
+  reservationId: string,
+  updatedData: {
+    reservation_date: string;
+    // Add other fields if your API requires them
+  }
+) {
+  const response = await fetch(
+    `https://coworking-reservation-backend.vercel.app/api/v1/reservations/${reservationId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedData),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to update reservation");
+  }
+
+  return await response.json();
+}

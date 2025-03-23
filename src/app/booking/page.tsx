@@ -5,12 +5,27 @@ import getBooking, { deleteBooking } from "@/libraries/bookingAPI";
 import getUserProfile from "@/libraries/userAPI";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
+import { updateBooking } from "@/libraries/bookingAPI";
+
+function getTodayDate() {
+  const today = new Date();
+  return today.toISOString().split("T")[0];
+}
+
+function getMaxDate() {
+  const max = new Date();
+  max.setMonth(max.getMonth() + 1); // add 1 month
+  return max.toISOString().split("T")[0];
+}
 
 export default function MyBookingPage() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [token, setToken] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [sessionAvailable, setSessionAvailable] = useState(true); // <== NEW
+  const [selectedDates, setSelectedDates] = useState<{ [id: string]: string }>(
+    {}
+  );
 
   useEffect(() => {
     const loadBookings = async () => {
@@ -46,6 +61,35 @@ export default function MyBookingPage() {
       );
     } catch (error: any) {
       alert(error.message || "Failed to delete booking");
+    }
+  };
+
+  const handleDateChange = async (reservationId: string, newDate: string) => {
+    const confirmChange = window.confirm(
+      "Are you sure you want to change the reservation date?"
+    );
+
+    if (!confirmChange) return;
+
+    try {
+      await updateBooking(token, reservationId, {
+        reservation_date: newDate,
+      });
+
+      setBookings((prev) =>
+        prev.map((b) =>
+          b.reservation_id === reservationId
+            ? { ...b, reservation_date: newDate }
+            : b
+        )
+      );
+
+      setSelectedDates((prev) => ({
+        ...prev,
+        [reservationId]: newDate,
+      }));
+    } catch (error: any) {
+      alert(error.message || "Failed to update reservation");
     }
   };
 
@@ -107,26 +151,44 @@ export default function MyBookingPage() {
             {bookings.map((booking: any) => (
               <div
                 key={booking.reservation_id}
-                className="bg-gray-50 rounded-xl p-6 shadow-md border border-gray-200 flex items-center justify-between"
+                className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 transition hover:shadow-xl flex flex-col gap-4"
               >
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                    {booking.space.name}
-                  </h2>
-                  <p className="text-gray-600">
-                    <strong>Address:</strong> {booking.space.address}
-                  </p>
-                  <p className="text-gray-600">
-                    <strong>Reservation Date:</strong>{" "}
-                    {new Date(booking.reservation_date).toLocaleDateString()}
-                  </p>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800 mb-1">
+                      {booking.space.name}
+                    </h2>
+                    <p className="text-gray-600 text-sm mb-1">
+                      <strong>Address:</strong> {booking.space.address}
+                    </p>
+                    <p className="text-gray-600 text-sm">
+                      <strong>Reservation Date:</strong>{" "}
+                      {new Date(booking.reservation_date).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleDelete(booking.reservation_id)}
+                    className="text-sm bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-sm transition"
+                  >
+                    Cancel
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleDelete(booking.reservation_id)}
-                  className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition"
-                >
-                  Cancel
-                </button>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Change Reservation Date:
+                  </label>
+                  <input
+                    type="date"
+                    value={selectedDates[booking.reservation_id] || ""}
+                    onChange={(e) =>
+                      handleDateChange(booking.reservation_id, e.target.value)
+                    }
+                    min={getTodayDate()}
+                    max={getMaxDate()}
+                    className="border border-gray-300 rounded-md px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
               </div>
             ))}
 
