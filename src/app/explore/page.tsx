@@ -1,14 +1,16 @@
-export default function explorePage() {
+import ExploreSpaces from "@/components/ExploreSpaces";
+import getSpaces from "@/libraries/spacesAPI";
+
+export default async function explorePage() {
+    const spaces = await getSpaces() 
+    console.log(spaces)
     return (
+
         <main>
-            <h1>Explore Co-working Space</h1>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et
-                metus nec libero ultrices fermentum. Nullam ac nunc nec purus
-                tincidunt congue. Proin et nisl nec nunc fermentum aliquam.
-                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-                posuere cubilia curae; Sed nec ultricies velit
-            </p>
+            <div className="bg-gray min-h-screen">
+            <ExploreSpaces spaceJson = {spaces}/>
+                </div>       
+       
         </main>
     );
 }
