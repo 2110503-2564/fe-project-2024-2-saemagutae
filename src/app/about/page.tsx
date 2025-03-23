@@ -3,13 +3,13 @@ export default function AboutPage() {
     {
       name: "Khannapong Wangkrasaer",
       role: "Developer",
-      image: "/images/you.jpg", // Put your image in public/images
+      image: "/images/mix.png",
       bio: "eiei",
     },
     {
       name: "Kritsada Limsripraphan",
       role: "Developer",
-      image: "/images/friend.jpg",
+      image: "/images/jing.png",
       bio: "haha",
     },
   ];
