@@ -105,21 +105,21 @@ export default function BookingForm() {
   };
 
   return (
-    <main className="min-h-screen pt-40 px-4 bg-gray-50 flex flex-col items-center">
+    <main className="min-h-screen mt-32 pt-16 px-8 bg-gray-50 flex flex-col items-center">
       {/* Left image */}
-      <div className="flex justify-center items-start gap-6">
+      <div className="flex justify-center items-start gap-10 mb-10">
         <img
           src="/images/left-banner.jpg" // change this to your own image path
           alt="Left Banner"
-          className="hidden md:block w-32 h-[500px] object-cover rounded-xl border-4 border-transparent animate-borderGlow"
+          className="hidden md:block w-48 h-[600px] object-cover rounded-xl border-4 border-transparent animate-borderGlow"
         />
 
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 max-w-md bg-white shadow-lg rounded-xl p-6"
+          className="space-y-6 w-full max-w-2xl bg-white shadow-lg rounded-xl p-8"
         >
-          <h2 className="text-3xl font-extrabold mb-6 text-center animate-rainbow drop-shadow">
+          <h2 className="text-4xl font-extrabold mb-8 text-center animate-rainbow drop-shadow">
             Book a Space
           </h2>
           <img
@@ -129,18 +129,18 @@ export default function BookingForm() {
                 : "/images/default.png"
             }
             alt="Space"
-            className="w-full h-48 object-cover rounded-lg mb-4 shadow transition duration-300 ease-in-out hover:scale-105"
+            className="w-full h-60 object-cover rounded-lg mb-6 shadow transition duration-300 ease-in-out hover:scale-105"
           />
 
           {/* Space dropdown */}
           <div>
-            <label className="block font-medium text-gray-700 mb-1">
+            <label className="block text-xl font-medium text-gray-700 mb-2">
               Select Space
             </label>
             <select
               value={spaceId ?? ""}
               onChange={(e) => setSpaceId(Number(e.target.value))}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-4 py-3 rounded-lg text-lg"
               required
             >
               <option value="" disabled>
@@ -156,14 +156,14 @@ export default function BookingForm() {
 
           {/* Date picker */}
           <div>
-            <label className="block font-medium text-gray-700 mb-1">
+            <label className="block text-xl font-medium text-gray-700 mb-2">
               Select Date
             </label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-4 py-3 rounded-lg text-lg"
               required
               min={minDate}
               max={maxDate}
@@ -172,13 +172,13 @@ export default function BookingForm() {
 
           <button
             type="submit"
-            className={`flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full transition duration-200 ${
+            className={`flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg w-full transition duration-200 ${
               isSubmitting ? "opacity-60 cursor-not-allowed" : ""
             }`}
             disabled={isSubmitting}
           >
             {isSubmitting && (
-              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <span className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
             )}
             {isSubmitting ? "Booking..." : "Book Now"}
           </button>
@@ -191,15 +191,15 @@ export default function BookingForm() {
         <img
           src="/images/right-banner.jpg" // change this too
           alt="Right Banner"
-          className="hidden md:block w-32 h-[500px] object-cover rounded-xl border-4 border-transparent animate-borderGlow"
+          className="hidden md:block w-48 h-[600px] object-cover rounded-xl border-4 border-transparent animate-borderGlow"
         />
       </div>
       {!session && (
         <div className="flex justify-center items-center gap-3 pt-2 border-t mt-4">
-          <p className="text-gray-600 text-sm">Not logged in?</p>
+          <p className="text-gray-600 text-lg">Not logged in?</p>
           <a
             href="/auth/signin"
-            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm transition"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-lg transition"
           >
             Sign In
           </a>
