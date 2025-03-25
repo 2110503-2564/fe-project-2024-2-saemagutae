@@ -68,3 +68,32 @@ export async function updateBooking(
 
   return await response.json();
 }
+
+export async function createBooking(
+  token: string,
+  bookingData: {
+    space_id: number;
+    reservation_date: string;
+  }
+) {
+  const response = await fetch(
+    `https://coworking-reservation-backend.vercel.app/api/v1/spaces/${bookingData.space_id}/reservations/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        reservation_date: bookingData.reservation_date,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to create booking");
+  }
+
+  return await response.json();
+}
