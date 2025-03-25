@@ -15,7 +15,6 @@ export default function Banner() {
   const [loading, setLoading] = useState(false);
   const [dotCount, setDotCount] = useState(0);
 
-  console.log(session?.user.token);
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (session?.user.token) {

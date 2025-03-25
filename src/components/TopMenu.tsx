@@ -1,12 +1,14 @@
+"use client";
 import Image from "next/image";
 import TopMenuItem from "./TopMenuItem";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Home, Search, Calendar, Info } from "lucide-react";
-
-export default async function TopMenu() {
-  const session = await getServerSession(authOptions);
+import { useSession } from "next-auth/react";
+export default function TopMenu() {
+  const { data: session, status } = useSession();
+  //console.log(session);
 
   let accountPath = "/auth/profile";
   if (!session) {
