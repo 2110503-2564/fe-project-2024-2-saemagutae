@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Loading from "@/components/Loading";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 
 export default function SignIn() {
   const router = useRouter();
@@ -36,8 +36,7 @@ export default function SignIn() {
       const result = await signIn("credentials", {
         email,
         password,
-        redirect: true,
-        callbackUrl: "/",
+        redirect: false,
       });
 
       if (result?.error) {
@@ -45,6 +44,12 @@ export default function SignIn() {
       }
 
       setSuccess("Login successful! Redirecting...");
+
+      const updatedSession = await fetch("/api/auth/session").then((res) =>
+        res.json()
+      );
+
+      router.push("/"); // Redirect to home page
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Failed to login. Try again.");

@@ -9,9 +9,17 @@ export const authOptions: AuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email", placeholder: "Email" },
-        password: { label: "Password", type: "password", placeholder: "Password" },
+        password: {
+          label: "Password",
+          type: "password",
+          placeholder: "Password",
+        },
         name: { label: "Name", type: "text", placeholder: "Name" },
-        telephone: { label: "Telephone", type: "text", placeholder: "Telephone" },
+        telephone: {
+          label: "Telephone",
+          type: "text",
+          placeholder: "Telephone",
+        },
         role: { label: "Role", type: "text", placeholder: "Role" },
       },
       async authorize(credentials, req) {
@@ -21,7 +29,13 @@ export const authOptions: AuthOptions = {
 
         if (req.method === "POST" && req.body?.action === "register") {
           const { name, email, password, telephone, role } = credentials;
-          const user = await registerUser(name, email, password, telephone, role);
+          const user = await registerUser(
+            name,
+            email,
+            password,
+            telephone,
+            role
+          );
           if (user) {
             return user;
           } else {
@@ -29,7 +43,7 @@ export const authOptions: AuthOptions = {
           }
         } else {
           const user = await loginUser(credentials.email, credentials.password);
-          
+
           if (user) {
             return user;
           } else {
