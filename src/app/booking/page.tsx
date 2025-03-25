@@ -6,6 +6,8 @@ import getUserProfile from "@/libraries/userAPI";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { updateBooking } from "@/libraries/bookingAPI";
+import { Session } from "inspector/promises";
+import Banner from "@/components/Banner";
 
 function getTodayDate() {
   const today = new Date();
@@ -26,6 +28,7 @@ export default function MyBookingPage() {
   const [selectedDates, setSelectedDates] = useState<{ [id: string]: string }>(
     {}
   );
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     const loadBookings = async () => {
@@ -41,7 +44,16 @@ export default function MyBookingPage() {
 
       try {
         const me = await getUserProfile(token);
-        const bookingRes = await getBooking(token, me.id);
+        console.log("Logged-in user:", me);
+        setCurrentUser(me.data); // Save the logged-in user info
+
+        let bookingRes;
+
+        if (me.role === "admin") {
+          bookingRes = await getBooking(token, ""); // backend returns all bookings
+        } else {
+          bookingRes = await getBooking(token, me.id);
+        }
         setBookings(bookingRes.data);
       } catch (error) {
         console.error("Error loading bookings:", error);
@@ -124,6 +136,8 @@ export default function MyBookingPage() {
     );
   }
 
+  //console.log("Bookings:", bookings);
+  console.log("Current user:", currentUser);
   return (
     <main className="min-h-screen flex items-center justify-center bg-white px-6 py-12 mt-24">
       <div className="w-full max-w-4xl text-center">
@@ -139,7 +153,7 @@ export default function MyBookingPage() {
             <p className="text-gray-600 text-lg mb-4">
               You haven’t made any bookings yet.
             </p>
-            <Link href="/reservations">
+            <Link href="/reservation">
               <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition">
                 Make a Reservation
               </button>
@@ -161,6 +175,12 @@ export default function MyBookingPage() {
                     <p className="text-gray-600 text-sm mb-1">
                       <strong>Address:</strong> {booking.space.address}
                     </p>
+                    {currentUser?.role === "admin" && booking.user && (
+                      <p className="text-sm text-indigo-600 mt-1">
+                        <strong>Booked by:</strong> {booking.user.name} (
+                        {booking.user.email})
+                      </p>
+                    )}
                     <p className="text-gray-600 text-sm">
                       <strong>Reservation Date:</strong>{" "}
                       {new Date(booking.reservation_date).toLocaleDateString()}
@@ -195,11 +215,13 @@ export default function MyBookingPage() {
             {/* Booking count */}
             <div className="mt-8 flex flex-col items-center">
               <p className="text-gray-700 font-medium mb-3">
-                You have {bookings.length}/3 bookings
+                {currentUser?.role === "admin"
+                  ? `There are ${bookings.length} bookings`
+                  : `You have ${bookings.length}/3 bookings`}
               </p>
 
               {bookings.length < 3 && (
-                <Link href="/reservations">
+                <Link href="/reservation">
                   <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition">
                     Make Another Reservation
                   </button>
