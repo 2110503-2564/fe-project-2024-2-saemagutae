@@ -3,7 +3,7 @@ import Image from "next/image";
 import TopMenuItem from "./TopMenuItem";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { Home, Search, Calendar, Info } from "lucide-react";
 import { useSession } from "next-auth/react";
 export default function TopMenu() {

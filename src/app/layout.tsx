@@ -1,7 +1,7 @@
 import NextAuthProvider from "@/providers/NextAuthProvider";
 import "./global.css";
 import TopMenu from "@/components/TopMenu";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { getServerSession } from "next-auth";
 import GlobalLoading from "./loading";
 
