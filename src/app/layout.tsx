@@ -5,18 +5,20 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import GlobalLoading from "./loading";
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
-    const session = await getServerSession(authOptions);
+export default async function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  const session = await getServerSession(authOptions);
 
-    return (
-        <html lang="en">
-            <body>
-                <NextAuthProvider session={session}>
-                    {/* <GlobalLoading /> */}
-                    <TopMenu />
-                    {children}
-                </NextAuthProvider>
-            </body>
-        </html>
-    );
+  return (
+    <html lang="en">
+      <body>
+        <NextAuthProvider session={session}>
+          {/* <GlobalLoading /> */}
+          <TopMenu />
+          {children}
+        </NextAuthProvider>
+      </body>
+    </html>
+  );
 }
