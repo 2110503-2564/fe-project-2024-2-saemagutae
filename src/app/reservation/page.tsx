@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import getBooking from "@/libraries/bookingAPI";
 import { deleteBooking } from "@/libraries/bookingAPI";
 import getUserProfile from "@/libraries/userAPI";
+import Link from "next/link";
 
 export default function BookingForm() {
   const today = new Date();
@@ -108,11 +109,13 @@ export default function BookingForm() {
     <main className="min-h-screen mt-32 pt-16 px-8 bg-gray-50 flex flex-col items-center">
       {/* Left image */}
       <div className="flex justify-center items-start gap-10 mb-10">
-        <img
-          src="/images/left-banner.jpg" // change this to your own image path
-          alt="Left Banner"
-          className="hidden md:block w-48 h-[600px] object-cover rounded-xl border-4 border-transparent animate-borderGlow"
-        />
+        <Link href="/hahahoho">
+          <img
+            src="/images/left-banner.jpg" // change this to your own image path
+            alt="Left Banner"
+            className="hidden md:block w-48 h-[600px] object-cover rounded-xl border-4 border-transparent animate-borderGlow"
+          />
+        </Link>
 
         {/* Form */}
         <form
@@ -188,11 +191,13 @@ export default function BookingForm() {
         </form>
 
         {/* Right image */}
-        <img
-          src="/images/right-banner.jpg" // change this too
-          alt="Right Banner"
-          className="hidden md:block w-48 h-[600px] object-cover rounded-xl border-4 border-transparent animate-borderGlow"
-        />
+        <Link href="/hahahoho">
+          <img
+            src="/images/right-banner.jpg" // change this too
+            alt="Right Banner"
+            className="hidden md:block w-48 h-[600px] object-cover rounded-xl border-4 border-transparent animate-borderGlow"
+          />
+        </Link>
       </div>
       {!session && (
         <div className="flex justify-center items-center gap-3 pt-2 border-t mt-4">
